@@ -73,13 +73,64 @@
     </header>
 
     <main>
-        <div class="container mt-5">
-            <h1>APP GOES HERE</h1>
-            <input id="message" placeholdeer="Enter a message" class="form-control" value="Type Here">
-            <buton id="btnSubmit" type="button" class="btn btn-primary mt-3">Display Message</buton>
-            <div class="alert alert-danger mt-5 p-4" role="alert" id="alertMessage">
-                <!--Message Goes Here-->
+        <div class="container">
+          <h1>Loan Calculator</h1>
+          <div class="row mb-4">
+            <div class="col-12 col-md-4">
+              <form id="loanForm" class=" border border-dark p-3">
+                <div class="form-group">
+                  <label for="loanTotal">Loan Amount</label>
+                  <input type="number" class="form-control" id="loanTotal" aria-describedby="emailHelp" placeholder="Enter loan total">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="term">Term(Months)</label>
+                  <input type="number" class="form-control" id="term" placeholder="Enter number of terms in months">
+                </div>
+                <div class="form-group mt-3">
+                  <label for="interest">Interest Rate</label>
+                  <input type="number" class="form-control" id="interest" placeholder="Enter interest rate percentage">
+                </div>
+                <button id="calculateLoan" type="submit" class="btn btn-primary mt-5">Calculate</button>
+              </form>
             </div>
+            <div class="col-12 col-md-8 border border-dark">
+              <h1 class="mt-3 text-center">Your Monthly Payments</h1>
+              <h2 id="monthlyPayment" class="text-center">0</h2>
+              <table class="table mt-5">
+                <tbody>
+                  <table class="table">
+                    <tr>
+                      <td><strong>Total Principal</strong></td>
+                      <td id="lTotal" class="text-end">0</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Total Interest</strong></td>
+                      <td id="tInterest" class="text-end">0</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Total Cost</strong></td>
+                      <td id="tCost" class="text-end">0</td>
+                    </tr>
+                  </table>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <table class="table table-striped border border-dark">
+            <thead>
+              <tr>
+                <th scope="col">Month</th>
+                <th scope="col">Payment</th>
+                <th scope="col">Principal</th>
+                <th scope="col">Interest</th>
+                <th scope="col">Total Interest</th>
+                <th scope="col">Balance</th>
+              </tr>
+            </thead>
+            <tbody id="paymentData">
+              <!--Monthly Loan Data Goes Here-->
+            </tbody>
+          </table>
         </div>
     </main>
 
@@ -101,6 +152,34 @@
         </div>
     </footer>
 
+    <!--Template for bottom table-->
+    <template id="monthlyData-template">
+    <tr>
+      <td data-month></td>
+      <td data-payment></td>
+      <td data-principal></td>
+      <td data-interest></td>
+      <td data-totalInterest></td>
+      <td data-balance></td>
+    </tr>
+    </template>
+
+    <!--Template for top table-->
+    <template id="topTableData-template">
+      <tr>
+        <th scope="row">Total Principal</th>
+        <td data-topPrincipal></td>
+      </tr>
+      <tr>
+        <th scope="row">Total Interest</th>
+        <td data-topInterest></td>
+      </tr>
+      <tr>
+        <th scope="row">Total Cost</th>
+        <td data-topCost>$0.00</td>
+      </tr>
+    </template>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
@@ -108,7 +187,13 @@
     <script src="/js/site.js"></script>
 
     <script>
-        document.getElementById("btnSubmit").addEventListener("click", getValues2);
+      document.addEventListener("DOMContentLoaded", function() {
+      // Attach getValues function to the form submit event
+      document.getElementById("loanForm").addEventListener("submit", function(event) {
+          event.preventDefault(); // Prevents the default form submission
+          getValues();
+      });
+      });
     </script>
 </body>
 
