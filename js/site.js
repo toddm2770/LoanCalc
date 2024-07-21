@@ -1,68 +1,80 @@
-function getValues(){
-    let loanTotal = document.getElementById("loanTotal").value;
-    let loanTerm = document.getElementById("term").value;
-    let interestRate = document.getElementById("interest").value;
+/*get values from forms, check that they are integers, 
+if they are divide interestRate by 100 to get decimal then run
+displayStats using parameters gathered from form
+*/
+function getValues() {
+    let loanTotal = document.getElementById("loanTotal").value.replace(/[_\W]+/g, "");
+    let loanTerm = document.getElementById("term").value.replace(/[_\W]+/g, "");
+    let interestRate = document.getElementById("interest").value.replace(/[_\W]+/g, "");
 
     loanTotal = parseInt(loanTotal);
     loanTerm = parseInt(loanTerm);
-    interestRate = parseFloat(interestRate)/100;
+    interestRate = parseInt(interestRate);
 
-    let totalInterest = calculateTotalInterest(loanTotal, interestRate);
-    let monthlyPayment = calculateMonthlyPayment(loanTotal, loanTerm, interestRate);
-    let payments = displayPayments(loanTotal, loanTerm, interestRate, monthlyPayment);
-    return {totalInterest, monthlyPayment, payments};
+    if(Number.isInteger(loanTotal) && Number.isInteger(loanTerm) && Number.isInteger(interestRate)){
+
+    interestRate = parseFloat(interestRate) / 100;   
+    let stats = displayStats(loanTotal, loanTerm, interestRate);
+    return stats;
+
+    }
 }
 
-function calculateTotalInterest(lTotal, iRate){
-    let totalInterest = lTotal * iRate;
-    let totalCost = totalInterest + lTotal;
-    displayStatsTop(lTotal, totalInterest, totalCost);
-    return totalInterest;
-}
+//calculate the fixed monthly payment
+function calculateMonthlyPayment(lTotal, lTerm, iRate) {
 
-function displayStatsTop(lTotal, tInterest, tCost){
-    document.getElementById("lTotal").innerHTML = "$" + lTotal.toLocaleString();
-    document.getElementById("tInterest").innerHTML = "$" +  tInterest.toLocaleString();
-    document.getElementById("tCost").innerHTML = "$" +  tCost.toLocaleString();
-}
-
-function calculateMonthlyPayment(lTotal, lTerm, iRate){
+    //divide yearly interest rate by 12 to get monthly interest rate
     let monthlyRate = iRate / 12;
-    let totalMonthlyPayment = lTotal * (monthlyRate) / (1 - Math.pow(1 + monthlyRate, -lTerm));
-    document.getElementById("monthlyPayment").innerHTML = "$" + totalMonthlyPayment.toLocaleString();
-    return totalMonthlyPayment;
+    /* calculates the monthly payment amount needed to repay a loan
+    within the term length including the principal and interest based
+    on the loan, monthly interest rate, and loan term
+    */
+    let monthlyPayment = (lTotal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -lTerm));
+    return monthlyPayment;
 }
 
-function displayPayments(lTotal, lTerm, iRate, monthlyPayment) {
-    // Prepare the table body
-    let paymentData = document.getElementById("paymentData");
-    paymentData.innerHTML = ""; // Clear any existing data
+/*calculates the amount of principal paid off and interest paid, 
+remaining balance, and total interest paid to date for each month
+populates the table with with data monthly data
+*/
+function displayStats(lTotal, lTerm, iRate){
 
-    let balance = lTotal;
+    let monthlyPayment = calculateMonthlyPayment(lTotal, lTerm, iRate);
+    let remainingBalance = lTotal;
     let totalInterest = 0;
 
-    for (let month = 1; month <= lTerm; month++) {
-        let monthlyRate = iRate / 12;
-        let interestPayment = balance * monthlyRate;
+    //iterates over each month and performs payment calculations
+    for (let month = 1; month <= lTerm; month++){
+
+        let interestPayment = remainingBalance * (iRate / 12);
         let principalPayment = monthlyPayment - interestPayment;
-        balance -= principalPayment;
+        remainingBalance -= principalPayment;
         totalInterest += interestPayment;
 
-        // Ensure balance doesn't go negative
-        if (balance < 0) balance = 0;
-
-        // Get the template and clone it
         let template = document.getElementById("monthlyData-template").content.cloneNode(true);
 
-        // Set the values for the current month
         template.querySelector("[data-month]").textContent = month;
-        template.querySelector("[data-payment]").textContent = "$" + monthlyPayment.toLocaleString();
-        template.querySelector("[data-principal]").textContent = "$" + principalPayment.toLocaleString();
-        template.querySelector("[data-interest]").textContent = "$" + interestPayment.toLocaleString();
-        template.querySelector("[data-totalInterest]").textContent = "$" + totalInterest.toLocaleString();
-        template.querySelector("[data-balance]").textContent = "$" + balance.toLocaleString();
+        template.querySelector("[data-payment]").textContent = "$" + monthlyPayment.toFixed(2).toLocaleString();
+        template.querySelector("[data-principal]").textContent = "$" + principalPayment.toFixed(2).toLocaleString();
+        template.querySelector("[data-interest]").textContent = "$" + interestPayment.toFixed(2).toLocaleString();
+        template.querySelector("[data-totalInterest]").textContent = "$" + totalInterest.toFixed(2).toLocaleString();
+        template.querySelector("[data-balance]").textContent = "$" + remainingBalance.toFixed(2).toLocaleString();
 
-        // Append the populated row to the table
         paymentData.appendChild(template);
+
+        /*once the month is greater than the term length populate top table with
+        last total interest paid along with the amount of the loan and the total
+        cost of the loan including interest*/
+        if(month >= lTerm){
+
+            let loanAmount = lTotal;
+            let totalCost = lTotal += totalInterest;
+
+            document.getElementById("lTotal").innerHTML = "$" + loanAmount.toFixed(2).toLocaleString();
+            document.getElementById("tInterest").innerHTML = "$" +  totalInterest.toFixed(2).toLocaleString();
+            document.getElementById("tCost").innerHTML = "$" +  totalCost.toFixed(2).toLocaleString();
+            document.getElementById("monthlyPayment").innerHTML = "$" + monthlyPayment.toFixed(2).toLocaleString();
+            
+        }
     }
 }

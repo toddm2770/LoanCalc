@@ -96,8 +96,3 @@ footer i{
 footer i:hover{
     color: var(--cf-theme-200)
 }
-
-.dollarSign{
-    margin-right: 2px;
-    content: "$";
-}
