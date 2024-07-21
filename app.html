@@ -80,15 +80,15 @@
               <form id="loanForm">
                 <div class="form-group m-3">
                   <label for="loanTotal">Loan Amount</label>
-                  <input type="number" class="form-control" id="loanTotal"placeholder="Enter loan total">
+                  <input type="number" step=".01" class="form-control" id="loanTotal"placeholder="Loan Total">
                 </div>
                 <div class="form-group m-3">
                   <label for="term">Term(Months)</label>
-                  <input type="number" class="form-control" id="term" placeholder="Enter number of terms in months">
+                  <input type="number" class="form-control" id="term" placeholder="Term Length">
                 </div>
                 <div class="form-group m-3">
                   <label for="interest">Interest Rate</label>
-                  <input type="number" class="form-control" id="interest" placeholder="Enter interest rate percentage">
+                  <input type="percentage" class="form-control" id="interest" placeholder="Interest Rate">
                 </div>
                 <button id="calculateLoan" type="submit" class="btn btn-primary m-3">Calculate</button>
               </form>

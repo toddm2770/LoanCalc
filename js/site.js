@@ -3,20 +3,21 @@ if they are divide interestRate by 100 to get decimal then run
 displayStats using parameters gathered from form
 */
 function getValues() {
-    let loanTotal = document.getElementById("loanTotal").value.replace(/[_\W]+/g, "");
-    let loanTerm = document.getElementById("term").value.replace(/[_\W]+/g, "");
-    let interestRate = document.getElementById("interest").value.replace(/[_\W]+/g, "");
+    let loanTotal = document.getElementById("loanTotal").value;
+    let loanTerm = document.getElementById("term").value;
+    let interestRate = document.getElementById("interest").value;
 
-    loanTotal = parseInt(loanTotal);
+    loanTotal = parseFloat(loanTotal);
     loanTerm = parseInt(loanTerm);
-    interestRate = parseInt(interestRate);
-
-    if(Number.isInteger(loanTotal) && Number.isInteger(loanTerm) && Number.isInteger(interestRate)){
-
     interestRate = parseFloat(interestRate) / 100;   
+
+    if(Number.parseFloat(loanTotal) && Number.isInteger(loanTerm) && Number.parseFloat(interestRate)){
+
     let stats = displayStats(loanTotal, loanTerm, interestRate);
     return stats;
 
+    } else {
+        alert("Please enter a number")
     }
 }
 
