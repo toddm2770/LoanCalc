@@ -23,14 +23,10 @@ function getValues() {
 
 //calculate the fixed monthly payment
 function calculateMonthlyPayment(lTotal, lTerm, iRate) {
-
-    //divide yearly interest rate by 12 to get monthly interest rate
+    
     let monthlyRate = iRate / 12;
-    /* calculates the monthly payment amount needed to repay a loan
-    within the term length including the principal and interest based
-    on the loan, monthly interest rate, and loan term
-    */
-    let monthlyPayment = (lTotal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -lTerm));
+
+    let monthlyPayment = /*calculates the total interest for one month*/(lTotal * monthlyRate) / /*adjust for total number of payments*/(1 - Math.pow(1 + monthlyRate, -lTerm));
     return monthlyPayment;
 }
 
